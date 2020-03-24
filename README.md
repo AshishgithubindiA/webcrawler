@@ -41,3 +41,12 @@ can get blocked by proxy server. There are options to overcome this some way by 
 7. Explain the design patterns used
 - I have used factory design pattern to get specific handler. Like, In here if url contains goodreads.com,
  all the scrapping should be done by goodreads handler. if not match any, we can manage it by general website handler.
+
+
+How to run:
+
+Linux command: java -jar target/webcrawler-1.0-SNAPSHOT.jar
+
+Then you will be able to pass url through swagger UI
+
+link : http://localhost:8080//swagger-ui.html#!/
