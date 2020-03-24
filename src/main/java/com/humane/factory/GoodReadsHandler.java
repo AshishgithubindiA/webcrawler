@@ -1,4 +1,4 @@
-package com.humane.helper;
+package com.humane.factory;
 
 import com.humane.model.BookInfo;
 import com.humane.repository.BookInfoRepository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * Created by ashish on 23/03/20.
  */
 @Component
-public class GoodReadsHelper {
+public class GoodReadsHandler extends WebsiteHandler{
     public static String HTML_TD_BOOK_ITEMTYPE = "http://schema.org/Book";
     public static String HTML_ATTRIBUTE_TAG_TBODY = "tbody";
     public static String HTML_ATTRIBUTE_TAG_TR = "tr";
@@ -27,10 +27,12 @@ public class GoodReadsHelper {
     private BookInfoRepository bookInfoRepository ;
 
     @Autowired
-    public GoodReadsHelper(BookInfoRepository bookInfoRepository){
+    public GoodReadsHandler(BookInfoRepository bookInfoRepository){
         this.bookInfoRepository = bookInfoRepository;
     }
-    public void extractBookInfo(Document document){
+
+
+    public void scrapData(Document document){
         Elements jpgs = document.select(HtmlDocUtil.HTML_ELEMENT_IMAGES_WITH_TAG_JPG);
 
         for (Element jpg : jpgs) {

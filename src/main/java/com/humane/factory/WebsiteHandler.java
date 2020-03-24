@@ -1,28 +1,31 @@
-package com.humane.util;
+package com.humane.factory;
 
 import com.humane.exception.JsoupHandleException;
-import com.humane.model.UrlEntity;
+import com.humane.util.HtmlDocUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import javax.jms.JMSException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ashish on 14/03/20.
+ * Created by ashish on 23/03/20.
  */
 @Component
-public class JsoupUtil {
+@Primary
+public class WebsiteHandler {
 
-    public Document fetchDocument(String url) throws JsoupHandleException, IOException{
+
+
+    public Document fetchDocument(String url) throws JsoupHandleException, IOException {
         Document document = null;
         try {
-        document = Jsoup.connect(url).get();
+            document = Jsoup.connect(url).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,5 +68,9 @@ public class JsoupUtil {
             list.add(png.attr("src"));
         }
         return list;
+    }
+
+    public void scrapData(Document document) throws JsoupHandleException{
+
     }
 }

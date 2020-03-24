@@ -3,6 +3,7 @@ package com.humane.listener;
 import com.humane.model.UrlEntity;
 import com.humane.service.HtmlFetcher;
 import com.humane.util.GsonUtil;
+import com.humane.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,8 @@ public class UrlFrontierListener {
     @JmsListener(destination = "inmemory.queue")
     public void listener(String urlMessage) {
         System.out.println("Received : "+ urlMessage.toString());
-        htmlFetcher.downloadDocument(GsonUtil.getObject(urlMessage));
+        UrlEntity urlEntity = GsonUtil.getObject(urlMessage);
+        if(UrlUtil.isValidUrl(urlEntity.getUrlString()))
+        htmlFetcher.downloadDocument(urlEntity);
     }
 }

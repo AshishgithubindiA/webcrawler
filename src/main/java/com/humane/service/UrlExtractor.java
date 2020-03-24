@@ -1,6 +1,7 @@
 package com.humane.service;
 
-import com.humane.helper.GoodReadsHelper;
+import com.humane.factory.GoodReadsHandler;
+import com.humane.factory.WebsiteHandler;
 import com.humane.model.BookInfo;
 import com.humane.repository.BookInfoRepository;
 import com.humane.util.JsoupUtil;
@@ -17,26 +18,32 @@ import java.util.List;
 public class UrlExtractor {
 
     private JsoupUtil jsoupUtil;
+    @Autowired
     private UrlLoader urlLoader;
-    private GoodReadsHelper goodReadsHelper;
     private BookInfoRepository bookInfoRepository;
 
+    private WebsiteHandler handler;
+
     @Autowired
-    public UrlExtractor(JsoupUtil jsoupUtil, UrlLoader urlLoader, GoodReadsHelper goodReadsHelper, BookInfoRepository bookInfoRepository){
-        this.jsoupUtil = jsoupUtil;
-        this.urlLoader = urlLoader;
-        this.goodReadsHelper = goodReadsHelper;
+    public UrlExtractor(WebsiteHandler handler, BookInfoRepository bookInfoRepository){
+        this.handler = handler;
         this.bookInfoRepository = bookInfoRepository;
     }
 
-    public void getUrlsFromDoc(Document document){
-        List<String> subUrls =  jsoupUtil.extractUrls(document);
-        List<String> jpgList =  jsoupUtil.extractJpgs(document);
-        List<String> pngList =  jsoupUtil.extractPngs(document);
-        goodReadsHelper.extractBookInfo(document);
-        List<BookInfo> allBooks = bookInfoRepository.findAll();
+    public void getUrlsFromDoc(Document document, WebsiteHandler handler) {
+        scrapData(document,handler);
+
+        List<String> subUrls =  handler.extractUrls(document);
+        List<String> jpgList =  handler.extractJpgs(document);
+        List<String> pngList =  handler.extractPngs(document);
         urlLoader.loadUrl(subUrls);
     }
+
+    public void scrapData(Document document, WebsiteHandler handler){
+        handler.scrapData(document);
+        List<BookInfo> allBooks = bookInfoRepository.findAll();
+    }
+
     
 
 }

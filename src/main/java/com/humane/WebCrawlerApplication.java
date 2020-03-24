@@ -3,6 +3,7 @@ package com.humane;
 import com.humane.enums.VisitedStatus;
 import com.humane.model.UrlEntity;
 import com.humane.util.GsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.jms.Queue;
 import java.io.IOException;
@@ -27,21 +30,26 @@ import java.io.IOException;
         ,"com.humane.repository"
         ,"com.humane.service"
         ,"com.humane.listener"
-        ,"com.humane.helper"})
+        ,"com.humane.helper"
+        ,"com.humane.resource"
+        ,"com.humane.factory"})
 @SpringBootApplication
 @EnableJms
+@Configuration
+@Slf4j
+@EnableSwagger2
 public class WebCrawlerApplication {
 
-    public static String seedUrl = "https://www.goodreads.com/";
+    public static String seedUrl;
     public static void main(String[] args) {
-
-        UrlEntity urlEntity = new UrlEntity();
-        urlEntity.setUrlString(seedUrl);
-        urlEntity.setIsVisited(VisitedStatus.NOT_VISITED);
-
-        ConfigurableApplicationContext context = SpringApplication.run(WebCrawlerApplication.class, args);
-        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-        jmsTemplate.convertAndSend("inmemory.queue", GsonUtil.getJson(urlEntity));
+        SpringApplication.run(WebCrawlerApplication.class, args);
+//        UrlEntity urlEntity = new UrlEntity();
+//        urlEntity.setUrlString(seedUrl);
+//        urlEntity.setIsVisited(VisitedStatus.NOT_VISITED);
+//
+//        ConfigurableApplicationContext context = SpringApplication.run(WebCrawlerApplication.class, args);
+//        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+//        jmsTemplate.convertAndSend("inmemory.queue", GsonUtil.getJson(urlEntity));
 
     }
 

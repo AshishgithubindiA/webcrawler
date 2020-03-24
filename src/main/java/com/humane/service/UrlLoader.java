@@ -8,10 +8,12 @@ import com.humane.repository.UrlRepository;
 import com.humane.util.GsonUtil;
 import com.humane.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.jms.JMSException;
 import javax.jms.Queue;
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +37,8 @@ public class UrlLoader {
         this.queue = queue;
     }
 
-    public void loadUrl(List<String> subUrls) throws JmsHandleException{
-        List<UrlEntity> allUrls = repository.findAll();
+    public void loadUrl(List<String> subUrls) {
+//        List<UrlEntity> allUrls = repository.findAll();
         for(String url: subUrls){
             if(!UrlUtil.isValidUrl(url)) continue;
             url = url.charAt(0)=='/'? WebCrawlerApplication.seedUrl+url:url;
@@ -45,7 +47,12 @@ public class UrlLoader {
             if(CollectionUtils.isEmpty(urlEntities)){
                 sendNewUrl(url);
             }else if(urlEntities.get(0).getIsVisited().equals(VisitedStatus.NOT_VISITED)){
-                jmsTemplate.convertAndSend(queue,GsonUtil.getJson(urlEntities.get(0)));
+                try{
+                    jmsTemplate.convertAndSend(queue,GsonUtil.getJson(urlEntities.get(0)));
+                }catch (JmsException e){
+                    e.printStackTrace();
+                }
+
             }else {
                 System.out.println("Already visited : "+url);
             }
@@ -53,13 +60,19 @@ public class UrlLoader {
         }
     }
 
-    public void sendNewUrl(String url) throws JmsHandleException{
+    public void sendNewUrl(String url) {
         UrlEntity urlEntity = new UrlEntity();
-        url = url.charAt(0)=='/'? WebCrawlerApplication.seedUrl+url:url;
+        url = !url.contains("http") || !url.contains("www.")? WebCrawlerApplication.seedUrl+url:url;
         urlEntity.setIsVisited(VisitedStatus.NOT_VISITED);
         urlEntity.setUrlString(url);
         repository.save(urlEntity);
-        jmsTemplate.convertAndSend(queue, GsonUtil.getJson(urlEntity));
+
+        try{
+            jmsTemplate.convertAndSend(queue, GsonUtil.getJson(urlEntity));
+        }catch (JmsException e){
+            e.printStackTrace();
+        }
+
     }
 
 }
