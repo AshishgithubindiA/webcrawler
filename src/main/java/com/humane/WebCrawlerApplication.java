@@ -43,13 +43,6 @@ public class WebCrawlerApplication {
     public static String seedUrl;
     public static void main(String[] args) {
         SpringApplication.run(WebCrawlerApplication.class, args);
-//        UrlEntity urlEntity = new UrlEntity();
-//        urlEntity.setUrlString(seedUrl);
-//        urlEntity.setIsVisited(VisitedStatus.NOT_VISITED);
-//
-//        ConfigurableApplicationContext context = SpringApplication.run(WebCrawlerApplication.class, args);
-//        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-//        jmsTemplate.convertAndSend("inmemory.queue", GsonUtil.getJson(urlEntity));
 
     }
 
