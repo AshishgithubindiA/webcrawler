@@ -6,7 +6,7 @@ Assumptions:
 - This version is just to read public data of goodreads.com
 - We can scale it for other websites by creating more helpers.
 - not convenient for secure sites.
-- scrapping only boock details from goodreads.com.
+- scrapping only book details from goodreads.com. scaling details given below
 
 Libraries used:
 
@@ -33,10 +33,10 @@ can get blocked by proxy server. There are options to overcome this some way by 
 4. How would you store all the different data?
 - S3: for document store as distributed file system.
 - Nosql like MongoDb :  to store lrge scale scraped data.
-- Redis like cache : to quickley verify urls whether its visited or duplicate or any read heavy check.
+- Redis like cache : to quickly verify urls whether its visited or duplicate or any read heavy check.
 
 6. Explain the data model
--
+- Right now not any composed model used. Using simple url visiting status table and bookinfo table not regarding relation.
 
 7. Explain the design patterns used
 - I have used factory design pattern to get specific handler. Like, In here if url contains goodreads.com,
